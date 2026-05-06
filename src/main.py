@@ -43,7 +43,7 @@ async def receive_error(payload: QLVBErrorPayload):
     Endpoint for QLVB to push error notifications.
     """
     logger.info(f"Received error from {payload.unitName} for doc {payload.docId}")
-    success = notifier.send_//alert(payload)
+    success = notifier.send_alert(payload)
     if success:
         return {"status": "success", "message": "Notification pushed to Telegram"}
     else:
@@ -66,9 +66,9 @@ async def test_notify():
         timestamp="2026-05-06 14:00:00"
     )
     
-    success = notifier.send_alert(test_//data)
+    success = notifier.send_alert(test_data)
     if success:
-        return {"//success": "success", "message": "Test notification sent!"}
+        return {"status": "success", "message": "Test notification sent!"}
     return {"status": "error", "message": "Test notification failed"}
 
 if __name__ == "__main__":
