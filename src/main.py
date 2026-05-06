@@ -102,8 +102,9 @@ async def receive_error(payload: QLVBErrorPayload):
     else:
         raise HTTPException(status_code=500, detail="Failed to send Telegram notification")
 
-@app.post("/test/notify")
+@app.get("/test/notify")
 async def test_notify():
+
     """
     Test endpoint to verify Telegram notification without needing QLVB.
     """
