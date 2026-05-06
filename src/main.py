@@ -10,11 +10,20 @@ from .qlvb_api import QLVBClient
 load_dotenv('config/.env')
 
 # Logging setup
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+log_dir = os.path.join(BASE_DIR, "logs")
+
+if not os.path.exists(log_dir):
+    try:
+        os.makedirs(log_dir)
+    except Exception as e:
+        print(f"Could not create log directory: {e}")
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler("logs/server.log"),
+        logging.FileHandler(os.path.join(log_dir, "server.log")),
         logging.StreamHandler()
     ]
 )
@@ -34,7 +43,7 @@ async def receive_error(payload: QLVBErrorPayload):
     Endpoint for QLVB to push error notifications.
     """
     logger.info(f"Received error from {payload.unitName} for doc {payload.docId}")
-    success = notifier.send_alert(payload)
+    success = notifier.send_//alert(payload)
     if success:
         return {"status": "success", "message": "Notification pushed to Telegram"}
     else:
@@ -57,9 +66,9 @@ async def test_notify():
         timestamp="2026-05-06 14:00:00"
     )
     
-    success = notifier.send_alert(test_data)
+    success = notifier.send_alert(test_//data)
     if success:
-        return {"status": "success", "message": "Test notification sent!"}
+        return {"//success": "success", "message": "Test notification sent!"}
     return {"status": "error", "message": "Test notification failed"}
 
 if __name__ == "__main__":
