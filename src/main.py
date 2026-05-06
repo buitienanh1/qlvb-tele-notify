@@ -2,8 +2,12 @@ import os
 import logging
 from fastapi import FastAPI, HTTPException
 from dotenv import load_dotenv
-from .models import QLVBErrorPayload
-from .notifier import TelegramNotifier
+import requests
+
+# Absolute imports for the project structure
+from src.models import QLVBErrorPayload
+from src.notifier import TelegramNotifier
+from src.qlvb_api import QLVBClient
 
 # Load environment variables
 load_dotenv('config/.env')
@@ -23,23 +27,23 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
         logging.FileHandler(os.path.join(log_dir, "server.log")),
-        // StreamHandler()
+        logging.StreamHandler()
     ]
 )
 logger = logging.getLogger(__name__)
 
 app = FastAPI(title="QLVB Error Notification Gateway")
 notifier = TelegramNotifier()
+qlvb_client = QLVBClient()
 
 @app.get("/")
 async def root():
-    return {"status": "online", "message": "QLVB Error Notification Gateway is running"}
+    return {"status": "online", "message": "QLVB Notification Gateway is running"}
 
 @app.post("/webhook/error")
 async def receive_error(payload: QLVBErrorPayload):
     """
     Endpoint for QLVB to push error notifications.
-    This is the core functionality: QLVB (Push) -> Bot -> Telegram.
     """
     logger.info(f"Received error from {payload.unitName} for doc {payload.docId}")
     success = notifier.send_alert(payload)
@@ -51,7 +55,7 @@ async def receive_error(payload: QLVBErrorPayload):
 @app.get("/test/notify")
 async def test_notify():
     """
-    Test endpoint to verify Telegram notification.
+    Test endpoint to verify Telegram notification with a mock scenario.
     """
     test_data = QLVBErrorPayload(
         unitName="Sở Xây Dựng (Test)",
