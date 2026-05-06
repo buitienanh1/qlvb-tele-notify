@@ -11,14 +11,19 @@ from datetime import datetime
 load_dotenv('config/.env')
 
 # Logging setup
+log_dir = "logs"
+if not os.path.exists(log_dir):
+    os.makedirs(log_dir)
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler("logs/server.log"),
+        logging.FileHandler(f"{log_dir}/server.log"),
         logging.StreamHandler()
     ]
 )
+
 logger = logging.getLogger(__name__)
 
 app = FastAPI(title="QLVB Error Notification Gateway")
